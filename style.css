@@ -111,6 +111,52 @@ html, body {
   margin-top: 4px;
 }
 
+/* ---- narrative / story ---- */
+.story {
+  margin: 8px 0 32px;
+}
+.story-block {
+  margin-bottom: 28px;
+}
+.story-text {
+  max-width: 70ch;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0 0 14px;
+}
+.story-text strong {
+  color: var(--text-primary);
+}
+.story-block .kpi-row {
+  margin: 0;
+}
+.story-block .kpi-row:has(> :only-child) {
+  grid-template-columns: minmax(160px, 260px);
+}
+.conclusion-box {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--status-critical);
+  border-radius: 10px;
+  padding: 18px 22px;
+}
+.conclusion-box h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+.conclusion-box ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.conclusion-box li {
+  margin-bottom: 4px;
+}
+
 /* ---- chart cards ---- */
 .chart-card, .table-section {
   background: var(--surface-1);

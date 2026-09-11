@@ -339,27 +339,7 @@ function renderLegend(container, items) {
 /* KPI tiles                                                          */
 /* ---------------------------------------------------------------- */
 
-function renderKPIs(container, records) {
-  const total = records.length;
-  const approved = records.filter(r => r.megszavazva === 'igen');
-  const rejected = records.filter(r => r.megszavazva !== 'igen');
-  const approvalRate = total ? Math.round((approved.length / total) * 100) : 0;
-  const totalSurplus = approved.reduce((s, r) => s + r.tobbletLakas, 0);
-  const totalRevenue = approved.reduce((s, r) => s + r.bevetel, 0);
-  const lostRevenue = rejected.reduce((s, r) => s + r.megvaltas, 0);
-  const revenueVsBudget = totalRevenue / BUDGET_2026_EXPENDITURE;
-
-  const tiles = [
-    { label: 'Összes ügy', value: formatInt(total) },
-    { label: 'Jóváhagyva', value: formatInt(approved.length), sub: `${approvalRate}% arány` },
-    { label: 'Elutasítva', value: formatInt(rejected.length) },
-    { label: 'Jóváhagyott többletlakás', value: formatInt(totalSurplus) },
-    { label: 'Megváltási bevétel', value: formatCompactFt(totalRevenue), sub: formatFt(totalRevenue) },
-    { label: 'Elutasított megváltás', value: formatCompactFt(lostRevenue), sub: 'nem realizált összeg' },
-    { label: 'Bevétel a 2026-os kiadási költségvetés arányában', value: formatPercent(revenueVsBudget, 2),
-      sub: `${formatCompactFt(totalRevenue)} / ${formatCompactFt(BUDGET_2026_EXPENDITURE)}` },
-  ];
-
+function renderTiles(container, tiles) {
   container.innerHTML = '';
   tiles.forEach(t => {
     const el = document.createElement('div');
@@ -369,6 +349,34 @@ function renderKPIs(container, records) {
       (t.sub ? `<p class="stat-sub">${t.sub}</p>` : '');
     container.appendChild(el);
   });
+}
+
+function renderKPIs(containers, records) {
+  const total = records.length;
+  const approved = records.filter(r => r.megszavazva === 'igen');
+  const rejected = records.filter(r => r.megszavazva !== 'igen');
+  const approvalRate = total ? Math.round((approved.length / total) * 100) : 0;
+  const totalSurplus = approved.reduce((s, r) => s + r.tobbletLakas, 0);
+  const totalRevenue = approved.reduce((s, r) => s + r.bevetel, 0);
+  const lostRevenue = rejected.reduce((s, r) => s + r.megvaltas, 0);
+  const revenueVsBudget = totalRevenue / BUDGET_2026_EXPENDITURE;
+
+  renderTiles(containers.cases, [
+    { label: 'Összes ügy', value: formatInt(total) },
+    { label: 'Jóváhagyva', value: formatInt(approved.length), sub: `${approvalRate}% arány` },
+    { label: 'Elutasítva', value: formatInt(rejected.length) },
+  ]);
+
+  renderTiles(containers.revenue, [
+    { label: 'Megváltási bevétel', value: formatCompactFt(totalRevenue), sub: formatFt(totalRevenue) },
+    { label: 'Bevétel a 2026-os kiadási költségvetés arányában', value: formatPercent(revenueVsBudget, 2),
+      sub: `${formatCompactFt(totalRevenue)} / ${formatCompactFt(BUDGET_2026_EXPENDITURE)}` },
+    { label: 'Elutasított megváltás', value: formatCompactFt(lostRevenue), sub: 'nem realizált összeg' },
+  ]);
+
+  renderTiles(containers.extra, [
+    { label: 'Jóváhagyott többletlakás', value: formatInt(totalSurplus), sub: 'az alapértéken felül engedélyezve' },
+  ]);
 }
 
 /* ---------------------------------------------------------------- */
@@ -523,7 +531,11 @@ async function init() {
     const records = buildRecords(parseCSV(text));
     const monthly = groupByMonth(records);
 
-    renderKPIs(document.getElementById('kpiRow'), records);
+    renderKPIs({
+      cases: document.getElementById('kpiRowCases'),
+      revenue: document.getElementById('kpiRowRevenue'),
+      extra: document.getElementById('kpiRowExtra'),
+    }, records);
 
     renderLegend(document.getElementById('legendCases'), [
       { color: 'var(--status-good)', label: 'Jóváhagyva' },
