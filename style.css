@@ -325,19 +325,6 @@ tbody tr:hover td {
   font-size: 13px;
 }
 
-/* ---- footer ---- */
-.page-footer {
-  color: var(--text-muted);
-  font-size: 12px;
-  padding-top: 8px;
-  border-top: 1px solid var(--gridline);
-}
-.page-footer code {
-  background: var(--gridline);
-  padding: 1px 5px;
-  border-radius: 4px;
-}
-
 @media (max-width: 640px) {
   .header-inner h1 { font-size: 22px; }
   .kpi-row { grid-template-columns: repeat(2, 1fr); }

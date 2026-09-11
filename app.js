@@ -85,6 +85,30 @@ function shortMonth(datum) {
   return `${m[1]} ${abbr}`;
 }
 
+const HUN_MONTHS = ['január', 'február', 'március', 'április', 'május', 'június',
+  'július', 'augusztus', 'szeptember', 'október', 'november', 'december'];
+
+function parseHunDate(datum) {
+  const m = datum.match(/^(\d{4})\.\s*(\S+)/);
+  if (!m) return null;
+  const monthName = m[2].toLowerCase();
+  const monthIndex = HUN_MONTHS.indexOf(monthName);
+  if (monthIndex === -1) return null;
+  return { year: parseInt(m[1], 10), monthIndex, monthName };
+}
+
+function getLatestMonth(records) {
+  let latest = null;
+  for (const r of records) {
+    const d = parseHunDate(r.datum);
+    if (!d) continue;
+    if (!latest || d.year > latest.year || (d.year === latest.year && d.monthIndex > latest.monthIndex)) {
+      latest = d;
+    }
+  }
+  return latest;
+}
+
 /* ---------------------------------------------------------------- */
 /* Formatting helpers                                                 */
 /* ---------------------------------------------------------------- */
@@ -507,13 +531,14 @@ function wireMainTable(records) {
 /* Freshness indicator                                                 */
 /* ---------------------------------------------------------------- */
 
-function renderFreshness(lastModified) {
+function renderFreshness(records) {
   const el = document.getElementById('freshness');
-  if (lastModified) {
-    const d = new Date(lastModified);
-    el.textContent = `Adatok utolsó frissítése: ${d.toLocaleString('hu-HU')}`;
+  const latest = getLatestMonth(records);
+  if (latest) {
+    const lastDay = new Date(latest.year, latest.monthIndex + 1, 0).getDate();
+    el.textContent = `Adatok utolsó frissítése: ${latest.year}. ${latest.monthName} ${lastDay}.`;
   } else {
-    el.textContent = `Adatok betöltve: ${new Date().toLocaleString('hu-HU')}`;
+    el.textContent = 'Adatok betöltve';
   }
 }
 
@@ -526,10 +551,9 @@ async function init() {
     const res = await fetch(DATA_URL, { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const text = await res.text();
-    renderFreshness(res.headers.get('Last-Modified'));
-
     const records = buildRecords(parseCSV(text));
     const monthly = groupByMonth(records);
+    renderFreshness(records);
 
     renderKPIs({
       cases: document.getElementById('kpiRowCases'),
