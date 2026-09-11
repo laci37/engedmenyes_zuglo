@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zuglói engedményes beépítések</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="viz-root">
+
+  <header class="page-header">
+    <div class="header-inner">
+      <h1>Zuglói engedményes beépítések</h1>
+      <p class="subtitle">A XIV. kerületben jóváhagyott és elutasított parkolóhely‑megváltásos, engedményes építési ügyek áttekintése</p>
+      <p class="freshness" id="freshness">Adatok betöltése…</p>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="kpi-row" id="kpiRow" aria-label="Összesítő mutatók">
+      <!-- stat tiles injected by app.js -->
+    </section>
+
+    <section class="chart-card" id="cardMonthlyCases">
+      <div class="card-head">
+        <h2>Ügyek havi bontásban</h2>
+        <p class="card-desc">Jóváhagyott és elutasított engedményes ügyek száma hónaponként</p>
+      </div>
+      <div class="legend" id="legendCases"></div>
+      <div class="chart-scroll">
+        <svg id="chartCases" class="chart-svg" role="img" aria-label="Havi ügyszám, jóváhagyva és elutasítva"></svg>
+      </div>
+      <button class="table-toggle" data-target="tableCasesWrap" aria-expanded="false">Táblázat megjelenítése</button>
+      <div class="table-wrap" id="tableCasesWrap" hidden></div>
+    </section>
+
+    <section class="chart-card" id="cardMonthlyRevenue">
+      <div class="card-head">
+        <h2>Megváltási bevétel havi bontásban</h2>
+        <p class="card-desc">A jóváhagyott ügyekből befolyt megváltási összeg hónaponként</p>
+      </div>
+      <div class="chart-scroll">
+        <svg id="chartRevenue" class="chart-svg" role="img" aria-label="Havi megváltási bevétel"></svg>
+      </div>
+      <button class="table-toggle" data-target="tableRevenueWrap" aria-expanded="false">Táblázat megjelenítése</button>
+      <div class="table-wrap" id="tableRevenueWrap" hidden></div>
+    </section>
+
+    <section class="chart-card" id="cardUnits">
+      <div class="card-head">
+        <h2>Alapérték vs. engedményes lakásszám</h2>
+        <p class="card-desc">Az önkormányzati rendezési terv szerinti alapérték és a ténylegesen engedélyezett (engedményes) lakás- és irodaszám összesen, jóváhagyott ügyekben</p>
+      </div>
+      <div class="legend" id="legendUnits"></div>
+      <div class="chart-scroll">
+        <svg id="chartUnits" class="chart-svg" role="img" aria-label="Alapérték és engedményes összesített egységszám"></svg>
+      </div>
+    </section>
+
+    <section class="table-section" id="cardTable">
+      <div class="card-head">
+        <h2>Összes ügy</h2>
+        <p class="card-desc">Keresés cím szerint, oszlopfejlécre kattintva rendezhető</p>
+      </div>
+      <div class="table-controls">
+        <input type="search" id="searchBox" placeholder="Keresés cím szerint…" aria-label="Keresés cím szerint">
+      </div>
+      <div class="table-scroll">
+        <table id="mainTable">
+          <thead>
+            <tr>
+              <th data-key="datum">Dátum</th>
+              <th data-key="cim">Cím</th>
+              <th data-key="alapertekLakas" class="num">Alapérték lakás</th>
+              <th data-key="alapertekIroda" class="num">Alapérték iroda</th>
+              <th data-key="engedmenyesLakas" class="num">Engedményes lakás</th>
+              <th data-key="engedmenyesIroda" class="num">Engedményes iroda</th>
+              <th data-key="parkolo" class="num">Parkoló telken belül</th>
+              <th data-key="megvaltas" class="num">Megváltás</th>
+              <th data-key="megszavazva">Megszavazva</th>
+              <th data-key="tobbletLakas" class="num">Többlet lakás</th>
+              <th data-key="bevetel" class="num">Bevétel</th>
+            </tr>
+          </thead>
+          <tbody id="mainTableBody">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="page-footer">
+    <p>Forrás: <code id="sourceFile">data.csv</code> — az oldal minden betöltéskor a szerveren lévő aktuális CSV fájlt kéri le. Az adatok frissítéséhez elég felülírni a <code>data.csv</code> fájlt.</p>
+  </footer>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

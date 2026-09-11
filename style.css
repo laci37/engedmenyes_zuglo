@@ -1,0 +1,298 @@
+/* ---- design tokens (see dataviz skill palette) ---- */
+.viz-root {
+  --surface-1:      #fcfcfb;
+  --page-plane:     #f9f9f7;
+  --text-primary:   #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted:     #898781;
+  --gridline:       #e1e0d9;
+  --baseline:       #c3c2b7;
+  --border:         rgba(11,11,11,0.10);
+
+  --series-1:       #2a78d6; /* blue - sequential / alapérték */
+  --series-2:       #1baf7a; /* aqua - engedményes */
+  --status-good:    #0ca30c;
+  --status-critical:#d03b3b;
+
+  --seq-100: #cde2fb;
+  --seq-250: #86b6ef;
+  --seq-450: #2a78d6;
+  --seq-600: #184f95;
+}
+
+@media (prefers-color-scheme: dark) {
+  .viz-root {
+    --surface-1:      #1a1a19;
+    --page-plane:     #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+
+    --series-1:       #3987e5;
+    --series-2:       #199e70;
+    --status-good:    #0ca30c;
+    --status-critical:#e66767;
+
+    --seq-100: #184f95;
+    --seq-250: #184f95;
+    --seq-450: #3987e5;
+    --seq-600: #86b6ef;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--page-plane);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.viz-root {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+
+/* ---- header ---- */
+.page-header {
+  padding: 40px 0 24px;
+}
+.header-inner h1 {
+  font-size: 28px;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+.subtitle {
+  margin: 0 0 12px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  max-width: 70ch;
+}
+.freshness {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.freshness.error { color: var(--status-critical); }
+
+/* ---- KPI row ---- */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 8px 0 32px;
+}
+.stat-tile {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+.stat-tile .stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0 0 6px;
+}
+.stat-tile .stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+.stat-tile .stat-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ---- chart cards ---- */
+.chart-card, .table-section {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 20px 16px;
+  margin-bottom: 24px;
+}
+.card-head h2 {
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+.card-desc {
+  margin: 0 0 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.chart-scroll {
+  overflow-x: auto;
+}
+.chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: inherit;
+}
+
+/* SVG text defaults */
+.chart-svg text {
+  fill: var(--text-secondary);
+  font-size: 11px;
+}
+.chart-svg .axis-line {
+  stroke: var(--baseline);
+  stroke-width: 1;
+}
+.chart-svg .gridline {
+  stroke: var(--gridline);
+  stroke-width: 1;
+}
+.chart-svg .bar-label {
+  fill: var(--text-primary);
+  font-size: 10.5px;
+}
+
+/* tooltip */
+.viz-tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: var(--text-primary);
+  color: var(--surface-1);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.08s ease;
+  white-space: nowrap;
+}
+.viz-tooltip.visible { opacity: 1; }
+
+.table-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+.table-toggle:hover {
+  color: var(--text-primary);
+  border-color: var(--baseline);
+}
+
+/* ---- tables ---- */
+.table-wrap, .table-scroll {
+  overflow-x: auto;
+  margin-top: 12px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+thead th {
+  text-align: left;
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--baseline);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+thead th.num, td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+thead th:hover { color: var(--text-primary); }
+thead th.sorted::after {
+  content: " " attr(data-dir);
+  color: var(--text-muted);
+}
+tbody td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--gridline);
+  white-space: nowrap;
+}
+tbody tr:hover td {
+  background: var(--page-plane);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+.status-badge.igen {
+  color: var(--status-good);
+  background: color-mix(in srgb, var(--status-good) 14%, transparent);
+}
+.status-badge.nem {
+  color: var(--status-critical);
+  background: color-mix(in srgb, var(--status-critical) 14%, transparent);
+}
+
+.table-controls {
+  margin-bottom: 4px;
+}
+#searchBox {
+  width: 100%;
+  max-width: 320px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--page-plane);
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+/* ---- footer ---- */
+.page-footer {
+  color: var(--text-muted);
+  font-size: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--gridline);
+}
+.page-footer code {
+  background: var(--gridline);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .header-inner h1 { font-size: 22px; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+}
