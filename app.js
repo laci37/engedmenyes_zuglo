@@ -109,6 +109,18 @@ function getLatestMonth(records) {
   return latest;
 }
 
+function getEarliestMonth(records) {
+  let earliest = null;
+  for (const r of records) {
+    const d = parseHunDate(r.datum);
+    if (!d) continue;
+    if (!earliest || d.year < earliest.year || (d.year === earliest.year && d.monthIndex < earliest.monthIndex)) {
+      earliest = d;
+    }
+  }
+  return earliest;
+}
+
 /* ---------------------------------------------------------------- */
 /* Formatting helpers                                                 */
 /* ---------------------------------------------------------------- */
@@ -380,7 +392,6 @@ function renderKPIs(containers, records) {
   const approved = records.filter(r => r.megszavazva === 'igen');
   const rejected = records.filter(r => r.megszavazva !== 'igen');
   const approvalRate = total ? Math.round((approved.length / total) * 100) : 0;
-  const totalSurplus = approved.reduce((s, r) => s + r.tobbletLakas, 0);
   const totalRevenue = approved.reduce((s, r) => s + r.bevetel, 0);
   const lostRevenue = rejected.reduce((s, r) => s + r.megvaltas, 0);
   const revenueVsBudget = totalRevenue / BUDGET_2026_EXPENDITURE;
@@ -397,10 +408,18 @@ function renderKPIs(containers, records) {
       sub: `${formatCompactFt(totalRevenue)} / ${formatCompactFt(BUDGET_2026_EXPENDITURE)}` },
     { label: 'Elutasított megváltás', value: formatCompactFt(lostRevenue), sub: 'nem realizált összeg' },
   ]);
+}
 
-  renderTiles(containers.extra, [
-    { label: 'Jóváhagyott többletlakás', value: formatInt(totalSurplus), sub: 'az alapértéken felül engedélyezve' },
-  ]);
+function renderHero(records) {
+  const totalSurplus = records
+    .filter(r => r.megszavazva === 'igen')
+    .reduce((s, r) => s + r.tobbletLakas, 0);
+  const earliest = getEarliestMonth(records);
+  const sinceLabel = earliest ? `${earliest.year}. ${earliest.monthName}` : '';
+
+  document.getElementById('heroValue').textContent = formatInt(totalSurplus);
+  document.getElementById('heroText').textContent =
+    `Ennyi extra lakás kapott engedélyt ${sinceLabel} óta Zuglóban. Ez főként a hibás szabályozásnak tudható be.`;
 }
 
 /* ---------------------------------------------------------------- */
@@ -554,11 +573,11 @@ async function init() {
     const records = buildRecords(parseCSV(text));
     const monthly = groupByMonth(records);
     renderFreshness(records);
+    renderHero(records);
 
     renderKPIs({
       cases: document.getElementById('kpiRowCases'),
       revenue: document.getElementById('kpiRowRevenue'),
-      extra: document.getElementById('kpiRowExtra'),
     }, records);
 
     renderLegend(document.getElementById('legendCases'), [

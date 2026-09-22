@@ -85,6 +85,25 @@ html, body {
 }
 .freshness.error { color: var(--status-critical); }
 
+/* ---- hero figure ---- */
+.hero {
+  margin: 12px 0 36px;
+}
+.hero-value {
+  font-size: clamp(56px, 9vw, 92px);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-primary);
+  margin: 0 0 10px;
+}
+.hero-text {
+  max-width: 60ch;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
 /* ---- KPI row ---- */
 .kpi-row {
   display: grid;
@@ -134,9 +153,6 @@ html, body {
 }
 .story-block .kpi-row {
   margin: 0;
-}
-.story-block .kpi-row:has(> :only-child) {
-  grid-template-columns: minmax(160px, 260px);
 }
 .conclusion-box {
   background: var(--surface-1);
