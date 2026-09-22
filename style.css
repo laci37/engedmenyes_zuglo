@@ -1,5 +1,5 @@
 /* ---- design tokens (see dataviz skill palette) ---- */
-.viz-root {
+:root {
   --surface-1:      #fcfcfb;
   --page-plane:     #f9f9f7;
   --text-primary:   #0b0b0b;
@@ -21,7 +21,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .viz-root {
+  :root {
     --surface-1:      #1a1a19;
     --page-plane:     #0d0d0d;
     --text-primary:   #ffffff;
